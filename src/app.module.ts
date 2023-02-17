@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
+import { BooksModule } from './books/books.module';
+import { Book } from './books/books.entity';
+ 
 
 const DB = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -10,12 +13,12 @@ const DB = TypeOrmModule.forRoot({
   username: 'root',
   password: '',
   database: 'test',
-  entities: [User],
+  entities: [User, Book],
   synchronize: true,
 });
 
 @Module({
-  imports: [DB, UserModule],
+  imports: [DB, UserModule, BooksModule],
   controllers: [],
   providers: [],
 })
