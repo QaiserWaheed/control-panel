@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from './books.entity';
-import { IAddBook, IUpdateBook, IDeleteBook } from './books.dto';
+import { IAddBook, IUpdateBook} from './books.dto';
 
 @Injectable()
 export class BooksService {
@@ -13,25 +13,50 @@ export class BooksService {
     return user;
   }
 
-  async UpdateBook(data: IUpdateBook) {
-    const book = this.bookrepo.findOneBy({ BookName: data.BookName });
+  async UpdateBook(id: number, data: IUpdateBook) {
+    const book = await this.bookrepo.findOneBy({ id: id});
     if (!book) {
-      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Book Not Found', HttpStatus.NOT_FOUND);
     }
      else {
-      this.bookrepo.update(
-        {
-          BookName: data.BookName, BookAuthor: data.BookAuthor, },{ BookPrice: data.BookPrice},
-      );
+     
+     book.BookName = data.BookName
+     book.BookAuthor = data.BookAuthor
+     book.BookPrice = data.BookPrice
+
+   const saved =  await this.bookrepo.save(book)
+    return saved
     }
   }
 
-  async DeleteBook(data: IDeleteBook) {
-    const user = this.bookrepo.findOneBy({ BookName: data.BookName });
-    if (!user) {
-      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
-    } else {
-      this.bookrepo.delete(data.BookName);
+
+  async GetAllBooks(){
+     
+    const Books = await this.bookrepo.find()
+   return  Books
+
+  }
+
+  async GetById(id:number){
+     
+    const Book = await this.bookrepo.findOneBy({id: id})
+    
+    if (!Book){
+      throw new HttpException("Book not Found", HttpStatus.NOT_FOUND)
+    }
+    else{
+      return Book;
+    }
+
+  }
+
+  async DeleteBook(id:number) {
+    const Book = await this.bookrepo.findOneBy({id: id})
+    if (!Book){
+      throw new HttpException("Book not Found", HttpStatus.NOT_FOUND)
+    }
+    else{
+      return Book;
     }
   }
 }
