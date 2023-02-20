@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AddBook, DeleteBook, UpdateBook } from './books.model';
+import { AddBook, UpdateBook } from './books.model';
+
 import { BooksService } from './books.service';
 
 @ApiTags('BOOKS')
@@ -8,18 +9,40 @@ import { BooksService } from './books.service';
 export class BooksController {
   constructor(private BookService: BooksService) {}
 
+
+
+
+
+@Get()
+async GetallBooks(){
+  return  await this.BookService.GetAllBooks();
+}
+
+
   @Post('/addbook')
-  async AddBook(@Body() data: AddBook) {
+  async AddBook(@Body() data: AddBook ) {
     return this.BookService.AddBook(data);
   }
 
-  @Post('/UpdateBook')
-  async UpdateBook(@Body() data: UpdateBook) {
-   return   this.BookService.UpdateBook(data);
+  @Get(':id')
+  async GetById(@Param("id") id:number){
+    return await this.BookService.GetById(id)
+
   }
 
-  @Delete('/deletBook')
-  async DeleteBook(@Body() data: DeleteBook) {
-    return   this.BookService.DeleteBook(data);
+  @Patch('/UpdateBook')
+  async UpdateBook(@Param("id") id: number, @Body() updatebook: UpdateBook) {
+   
+  return await this.BookService.UpdateBook(id,updatebook)
+
   }
+
+   @Delete('/DeleteById')
+   async DelteById(@Param("id") id:number){
+    return await this.BookService.GetById(id)
+
+  }
+
+   
+
 }

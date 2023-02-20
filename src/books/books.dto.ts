@@ -10,6 +10,3 @@ export interface IUpdateBook{
     BookPrice : number
 }
 
-export interface IDeleteBook{
-    BookName: string
-}
